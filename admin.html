@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>پنل مجله | Gdesign</title>
+<style>@font-face{font-family:'Vazirmatn';src:url(fonts/vazirmatn-var.woff2) format('woff2');font-weight:100 900;font-display:swap}
+:root{--rose:#c47a7a;--plum:#6e3f63;--aub:#341a30;--bg:#faf1ef;--ink:#2f1629;--mute:#856376;--line:rgba(110,63,99,.25);--ok:#2e7d4f;--bad:#c0392b}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Vazirmatn,Tahoma,sans-serif;background:linear-gradient(180deg,#faf1ef,#f0d9d8);color:var(--ink);line-height:1.8;min-height:100vh}
+[hidden]{display:none!important}
+.brand{font-family:'Great Vibes',cursive;font-size:30px;color:var(--plum);direction:ltr}
+.muted{color:var(--mute);font-size:13px}
+.grow{flex:1}
+.center{min-height:100vh;display:grid;place-items:center;padding:20px}
+.card{background:rgba(255,255,255,.92);border:1px solid var(--line);border-radius:14px;padding:16px;box-shadow:0 8px 24px rgba(47,22,41,.08);margin-bottom:14px}
+.login{width:min(400px,100%);display:grid;gap:12px;text-align:center}
+.login h1{font-size:20px}
+label{display:grid;gap:4px;font-size:13px;font-weight:700;margin-bottom:10px}
+input,select,textarea{font:inherit;font-size:14px;padding:10px 12px;border:1.5px solid var(--line);border-radius:10px;background:#fff;color:var(--ink);width:100%}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--plum);box-shadow:0 0 0 3px rgba(110,63,99,.12)}
+textarea{resize:vertical}
+input[type=checkbox]{width:auto}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:10px 20px;border:0;border-radius:10px;font:inherit;font-weight:700;font-size:14px;color:#fff;background:linear-gradient(135deg,var(--rose),var(--plum));cursor:pointer;text-decoration:none;transition:transform .15s,opacity .15s}
+.btn:hover{transform:translateY(-1px)}.btn:disabled{opacity:.5;cursor:wait}
+.btn.ghost{background:#fff;color:var(--plum);border:1.5px solid var(--line)}
+.btn.red{background:#fff;color:var(--bad);border:1.5px solid rgba(192,57,43,.4)}
+.btn.sm{padding:6px 12px;font-size:12.5px}
+.err{color:var(--bad);font-size:13px;min-height:1em}
+.bar{display:flex;align-items:center;gap:12px;padding:10px 4vw;background:#fdfaf8;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:5}
+.wrap{width:min(1180px,94%);margin:20px auto 60px}
+.row{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+.row h2{font-size:20px}
+.row input,.row select{width:auto;min-width:160px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{padding:10px 8px;border-bottom:1px solid var(--line);text-align:right}
+th{color:var(--mute);font-size:12px}
+.tw{overflow-x:auto}
+.badge{padding:2px 10px;border-radius:99px;font-size:11.5px;font-weight:800;background:rgba(110,63,99,.1);color:var(--plum)}
+.badge.on{background:rgba(46,125,79,.14);color:var(--ok)}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:1fr 320px;gap:16px;align-items:start}
+.cnt{font-weight:400;color:var(--mute)}
+#fContent{font-family:Consolas,monospace;font-size:13px;line-height:1.7}
+#prev{width:100%;height:420px;border:1.5px solid var(--line);border-radius:10px;background:#fff;margin-top:10px}
+#cprev{width:100%;aspect-ratio:1200/630;object-fit:cover;border-radius:10px;background:#f5e3e2;margin-bottom:10px}
+.chk{font-size:13px;display:grid;gap:4px}.chk .ok{color:var(--ok)}.chk .no{color:var(--bad)}
+#toast{position:fixed;bottom:20px;left:50%;transform:translate(-50%,40px);background:var(--aub);color:#fff;padding:10px 20px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:.25s;z-index:99;max-width:90vw}
+#toast.show{opacity:1;transform:translate(-50%,0)}#toast.bad{background:var(--bad)}
+@media(max-width:900px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="toast" role="status"></div>
+
+<!-- LOGIN -->
+<section id="login" class="center" hidden>
+  <form id="loginForm" class="card login">
+    <div class="brand">Gdesign</div>
+    <h1>ورود به پنل مجله</h1>
+    <label>ایمیل<input type="email" id="lEmail" dir="ltr" autocomplete="username" required></label>
+    <label>رمز عبور<input type="password" id="lPass" dir="ltr" autocomplete="current-password" required></label>
+    <button class="btn" id="lBtn">ورود</button>
+    <p class="err" id="lErr"></p>
+  </form>
+</section>
+
+<!-- PANEL -->
+<div id="panel" hidden>
+  <header class="bar">
+    <span class="brand">Gdesign</span><b>پنل مجله</b><span class="grow"></span>
+    <span class="muted" id="who" dir="ltr"></span>
+    <button class="btn ghost sm" id="outBtn" type="button">خروج</button>
+  </header>
+
+  <main class="wrap">
+    <!-- LIST -->
+    <section id="vList">
+      <div class="row">
+        <h2>مقالات</h2><span class="grow"></span>
+        <input id="qList" placeholder="جستجوی عنوان یا اسلاگ…">
+        <select id="stList"><option value="all">همه</option><option value="pub">منتشرشده</option><option value="draft">پیش‌نویس</option></select>
+        <button class="btn" id="newBtn" type="button">+ مقاله جدید</button>
+      </div>
+      <div class="card tw" id="tbl"></div>
+    </section>
+
+    <!-- EDITOR -->
+    <form id="eForm" autocomplete="off" hidden>
+      <div class="row">
+        <button class="btn ghost" id="backBtn" type="button">→ بازگشت</button>
+        <h2 id="eTitle"></h2><span class="grow"></span>
+        <a class="btn ghost" id="viewLink" target="_blank" rel="noopener" hidden>مشاهده</a>
+        <button class="btn red" id="delBtn" type="button" hidden>حذف</button>
+        <button class="btn" id="saveBtn">ذخیره</button>
+      </div>
+      <div class="grid">
+        <div>
+          <div class="card">
+            <label>عنوان مقاله<input id="fTitle" required></label>
+            <label>اسلاگ (آدرس مقاله)<input id="fSlug" dir="ltr" required></label>
+            <label>خلاصه (برای کارت‌ها)<textarea id="fExcerpt" rows="3"></textarea></label>
+          </div>
+          <div class="card">
+            <div class="row">
+              <b>متن مقاله (کد HTML)</b><span class="grow"></span>
+              <label class="btn ghost sm" style="margin:0">آپلود تصویر داخل متن<input type="file" id="inlineImg" accept="image/*" hidden></label>
+              <button class="btn ghost sm" id="prevBtn" type="button">پیش‌نمایش</button>
+            </div>
+            <textarea id="fContent" rows="18" dir="ltr" spellcheck="false" required></textarea>
+            <iframe id="prev" sandbox hidden title="پیش‌نمایش"></iframe>
+          </div>
+          <div class="card">
+            <b>سئو</b><br><br>
+            <label>عنوان سئو (meta title) <small class="cnt" id="cMT"></small><input id="fMT"></label>
+            <label>توضیح متا (meta description) <small class="cnt" id="cMD"></small><textarea id="fMD" rows="3"></textarea></label>
+            <label>کلمه کلیدی اصلی<input id="fKey"></label>
+            <label>کنونیکال دلخواه (اختیاری، آدرس کامل https://)<input id="fCan" dir="ltr"></label>
+            <label>اسکیمای دستی JSON-LD (اختیاری) <small class="cnt" id="cSch"></small><textarea id="fSch" rows="5" dir="ltr" spellcheck="false"></textarea></label>
+          </div>
+        </div>
+        <aside>
+          <div class="card">
+            <label>دسته‌بندی<select id="fCat" required></select></label>
+            <label>تاریخ انتشار<input type="datetime-local" id="fDate"></label>
+            <label>زمان مطالعه (دقیقه)<input type="number" id="fRead" min="1" max="99"></label>
+            <label style="display:flex;align-items:center;gap:8px"><input type="checkbox" id="fPub"> منتشر شود</label>
+          </div>
+          <div class="card">
+            <b>تصویر شاخص</b><br><span class="muted">خودکار به ۱۲۰۰×۶۳۰ و WebP تبدیل می‌شود و نسخه‌ی کوچک هم ساخته می‌شود.</span><br><br>
+            <img id="cprev" alt="" hidden>
+            <input type="file" id="coverFile" accept="image/*"><br><br>
+            <input type="hidden" id="fCover"><input type="hidden" id="fThumb">
+            <label>الت تصویر شاخص<input id="fAlt"></label>
+          </div>
+          <div class="card"><b>چک‌لیست سئو</b><br><br><div class="chk" id="seoBox"></div></div>
+        </aside>
+      </div>
+    </form>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+(function () {
+  'use strict';
+  var SB_URL = 'https://vssbywrvxrtupucdzugl.supabase.co';
+  var SB_KEY = 'sb_publishable_6EhBM_83qs0Y-ureJM_reg_akL1L_kK';
+  var BUCKET = 'blog-images';
+  var sb = supabase.createClient(SB_URL, SB_KEY);
+  var CATS = { menu:'منو دیجیتال', codesite:'کدنویسی سایت', site:'طراحی سایت', ai:'ویدیو با AI', seo:'سئو', ads:'تبلیغات ادز', webapp:'اپلیکیشن', grafic:'گرافیک' };
+  var $ = function (i) { return document.getElementById(i); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]; }); };
+  var fa = function (n) { return String(n).replace(/\d/g, function (c) { return '۰۱۲۳۴۵۶۷۸۹'[+c]; }); };
+  var posts = [], editingId = null, slugTouched = false, readTouched = false;
+
+  function toast(m, bad) {
+    var t = $('toast'); t.textContent = m; t.className = 'show' + (bad ? ' bad' : '');
+    clearTimeout(toast.t); toast.t = setTimeout(function () { t.className = ''; }, 3800);
+  }
+
+  /* ---------- auth ---------- */
+  function showLogin() { $('panel').hidden = true; $('login').hidden = false; }
+  function showPanel(user) {
+    $('login').hidden = true; $('panel').hidden = false; $('who').textContent = user.email || '';
+    loadList();
+  }
+  sb.auth.getSession().then(function (r) { r.data.session ? showPanel(r.data.session.user) : showLogin(); });
+  sb.auth.onAuthStateChange(function (ev, s) { if (!s) showLogin(); });
+
+  $('loginForm').addEventListener('submit', function (e) {
+    e.preventDefault(); $('lErr').textContent = ''; $('lBtn').disabled = true;
+    sb.auth.signInWithPassword({ email: $('lEmail').value.trim(), password: $('lPass').value }).then(function (r) {
+      $('lBtn').disabled = false;
+      if (r.error) { $('lErr').textContent = 'ایمیل یا رمز عبور اشتباه است.'; return; }
+      $('lPass').value = ''; showPanel(r.data.user);
+    });
+  });
+  $('outBtn').addEventListener('click', function () { sb.auth.signOut(); });
+
+  /* ---------- list ---------- */
+  function loadList() {
+    $('tbl').innerHTML = '<p class="muted">در حال بارگذاری…</p>';
+    return sb.from('posts').select('id,title,slug,category,is_published,published_at').order('published_at', { ascending: false }).limit(1000)
+      .then(function (r) {
+        if (r.error) { toast(r.error.message, 1); $('tbl').innerHTML = ''; return; }
+        posts = r.data; drawList();
+      });
+  }
+  function drawList() {
+    var q = $('qList').value.trim().toLowerCase(), st = $('stList').value;
+    var rows = posts.filter(function (p) {
+      var okQ = !q || (p.title || '').toLowerCase().indexOf(q) > -1 || (p.slug || '').toLowerCase().indexOf(q) > -1;
+      var okS = st === 'all' || (st === 'pub') === !!p.is_published;
+      return okQ && okS;
+    });
+    if (!rows.length) { $('tbl').innerHTML = '<p class="muted">مقاله‌ای پیدا نشد.</p>'; return; }
+    $('tbl').innerHTML = '<table><thead><tr><th>عنوان</th><th>دسته</th><th>وضعیت</th><th>تاریخ</th><th></th></tr></thead><tbody>' +
+      rows.map(function (p) {
+        return '<tr><td><b>' + esc(p.title) + '</b><br><span class="muted" dir="ltr">/' + esc(p.slug) + '</span></td>' +
+          '<td>' + esc(CATS[p.category] || p.category) + '</td>' +
+          '<td><span class="badge' + (p.is_published ? ' on' : '') + '">' + (p.is_published ? 'منتشرشده' : 'پیش‌نویس') + '</span></td>' +
+          '<td>' + (p.published_at ? new Date(p.published_at).toLocaleDateString('fa-IR') : '') + '</td>' +
+          '<td><div class="acts"><button class="btn ghost sm" data-edit="' + p.id + '" type="button">ویرایش</button>' +
+          (p.is_published ? '<a class="btn ghost sm" target="_blank" rel="noopener" href="/blog/' + encodeURIComponent(p.slug) + '">مشاهده</a>' : '') +
+          '</div></td></tr>';
+      }).join('') + '</tbody></table>';
+  }
+  $('tbl').addEventListener('click', function (e) { var b = e.target.closest('[data-edit]'); if (b) openEditor(b.dataset.edit); });
+  $('qList').addEventListener('input', drawList);
+  $('stList').addEventListener('change', drawList);
+  $('newBtn').addEventListener('click', function () { openEditor(null); });
+  $('backBtn').addEventListener('click', function () { $('eForm').hidden = true; $('vList').hidden = false; loadList(); });
+
+  /* ---------- editor ---------- */
+  $('fCat').innerHTML = '<option value="">انتخاب کنید…</option>' + Object.keys(CATS).map(function (k) { return '<option value="' + k + '">' + CATS[k] + '</option>'; }).join('');
+
+  function toLocal(iso) { var d = new Date(iso || Date.now()); d.setMinutes(d.getMinutes() - d.getTimezoneOffset()); return d.toISOString().slice(0, 16); }
+  function setCover(u) { $('cprev').hidden = !u; if (u) $('cprev').src = u; }
+  function fill(p) {
+    $('fTitle').value = p.title || ''; $('fSlug').value = p.slug || ''; $('fExcerpt').value = p.excerpt || '';
+    $('fContent').value = p.content_html || ''; $('fMT').value = p.meta_title || ''; $('fMD').value = p.meta_description || '';
+    $('fKey').value = p.focus_keyword || ''; $('fCan').value = p.canonical_url || ''; $('fSch').value = p.schema_json || '';
+    $('fCat').value = p.category || ''; $('fDate').value = toLocal(p.published_at); $('fRead').value = p.reading_minutes || 5;
+    $('fPub').checked = !!p.is_published; $('fCover').value = p.cover_url || ''; $('fThumb').value = p.thumb_url || '';
+    $('fAlt').value = p.cover_alt || ''; setCover(p.cover_url);
+  }
+  function showEditor() {
+    $('vList').hidden = true; $('eForm').hidden = false; $('prev').hidden = true; window.scrollTo(0, 0);
+    $('eTitle').textContent = editingId ? 'ویرایش مقاله' : 'مقاله جدید';
+    $('delBtn').hidden = !editingId;
+    var pub = editingId && $('fPub').checked && $('fSlug').value;
+    $('viewLink').hidden = !pub; if (pub) $('viewLink').href = '/blog/' + encodeURIComponent($('fSlug').value);
+    refresh();
+  }
+  function openEditor(id) {
+    editingId = id || null; slugTouched = !!id; readTouched = !!id; $('eForm').reset();
+    if (!id) { fill({ published_at: new Date().toISOString(), reading_minutes: 5 }); showEditor(); return; }
+    sb.from('posts').select('*').eq('id', id).single().then(function (r) {
+      if (r.error) { toast(r.error.message, 1); return; }
+      fill(r.data); showEditor();
+    });
+  }
+
+  function slugify(s) {
+    return s.trim().replace(/ي/g, 'ی').replace(/ك/g, 'ک').replace(/[^\p{L}\p{N}]+/gu, '-').replace(/^-+|-+$/g, '').toLowerCase();
+  }
+  function plain(h) { return h.replace(/<[^>]*>/g, ' ').replace(/\s+/g, ' ').trim(); }
+  function schemaObj() {
+    var raw = $('fSch').value.replace(/<\/?script[^>]*>/gi, '').trim();
+    if (!raw) return { ok: true, empty: true };
+    try { JSON.parse(raw); return { ok: true }; } catch (e) { return { ok: false }; }
+  }
+
+  function refresh() {
+    $('cMT').textContent = fa($('fMT').value.length) + ' / ۶۰';
+    $('cMD').textContent = fa($('fMD').value.length) + ' / ۱۶۰';
+    var sc = schemaObj(); $('cSch').textContent = sc.empty ? '' : (sc.ok ? '✅ معتبر' : '❌ JSON نامعتبر');
+    var text = plain($('fContent').value), words = text ? text.split(' ').length : 0;
+    if (!readTouched) $('fRead').value = Math.max(1, Math.round(words / 200));
+    var k = $('fKey').value.trim(), t = $('fTitle').value, s = $('fSlug').value, md = $('fMD').value, mt = $('fMT').value || t;
+    var c = [];
+    function add(ok, msg) { c.push('<div class="' + (ok ? 'ok' : 'no') + '">' + (ok ? '✅ ' : '⚠️ ') + msg + '</div>'); }
+    if (k) {
+      add(t.indexOf(k) > -1, 'کلمه کلیدی در عنوان');
+      add(s.indexOf(k.replace(/\s+/g, '-')) > -1, 'کلمه کلیدی در اسلاگ');
+      add(md.indexOf(k) > -1, 'کلمه کلیدی در توضیح متا');
+      add(text.indexOf(k) > -1, 'کلمه کلیدی در متن مقاله');
+      add($('fAlt').value.indexOf(k) > -1, 'کلمه کلیدی در الت تصویر');
+    } else add(false, 'کلمه کلیدی اصلی وارد نشده');
+    add(mt.length > 0 && mt.length <= 60, 'طول عنوان سئو تا ۶۰ کاراکتر');
+    add(md.length >= 120 && md.length <= 160, 'طول توضیح متا بین ۱۲۰ تا ۱۶۰');
+    add(!!$('fCover').value, 'تصویر شاخص آپلود شده');
+    add(!!$('fAlt').value.trim(), 'الت تصویر شاخص پر شده');
+    add(/<h2[\s>]/i.test($('fContent').value), 'حداقل یک تیتر H2 در متن');
+    add(words >= 300, 'حداقل ۳۰۰ کلمه (الان ' + fa(words) + ')');
+    $('seoBox').innerHTML = c.join('');
+  }
+  $('eForm').addEventListener('input', function (e) {
+    if (e.target.id === 'fTitle' && !slugTouched) $('fSlug').value = slugify($('fTitle').value);
+    if (e.target.id === 'fSlug') slugTouched = true;
+    if (e.target.id === 'fRead') readTouched = true;
+    refresh();
+  });
+  $('prevBtn').addEventListener('click', function () {
+    var f = $('prev'); f.hidden = !f.hidden;
+    if (!f.hidden) f.srcdoc = '<html dir="rtl"><body style="font-family:Tahoma,sans-serif;line-height:2;padding:14px;max-width:780px;margin:auto"><style>img{max-width:100%;height:auto}</style>' + $('fContent').value + '</body></html>';
+  });
+
+  /* ---------- images ---------- */
+  function loadImg(file) {
+    return new Promise(function (res, rej) {
+      var u = URL.createObjectURL(file), i = new Image();
+      i.onload = function () { URL.revokeObjectURL(u); res(i); }; i.onerror = rej; i.src = u;
+    });
+  }
+  function toBlob(img, w, h) {
+    var c = document.createElement('canvas'); c.width = w; c.height = h;
+    var s = Math.max(w / img.width, h / img.height), dw = img.width * s, dh = img.height * s;
+    c.getContext('2d').drawImage(img, (w - dw) / 2, (h - dh) / 2, dw, dh);
+    return new Promise(function (r) { c.toBlob(r, 'image/webp', 0.82); });
+  }
+  function upload(blob, folder) {
+    var path = folder + '/' + Date.now() + '-' + Math.random().toString(36).slice(2, 7) + '.webp';
+    return sb.storage.from(BUCKET).upload(path, blob, { contentType: 'image/webp', cacheControl: '31536000' }).then(function (r) {
+      if (r.error) throw r.error;
+      return sb.storage.from(BUCKET).getPublicUrl(path).data.publicUrl;
+    });
+  }
+  $('coverFile').addEventListener('change', function () {
+    var inp = this, f = inp.files[0]; if (!f) return; toast('در حال بهینه‌سازی و آپلود…');
+    loadImg(f).then(function (img) { return Promise.all([toBlob(img, 1200, 630), toBlob(img, 400, 210)]); })
+      .then(function (b) {
+        return Promise.all([upload(b[0], 'covers'), upload(b[1], 'thumbs')]).then(function (u) {
+          $('fCover').value = u[0]; $('fThumb').value = u[1]; setCover(u[0]); refresh();
+          toast('تصویر آپلود شد (' + fa(Math.round(b[0].size / 1024)) + ' کیلوبایت)');
+        });
+      })
+      .catch(function (e) { toast('خطا در آپلود: ' + (e.message || e), 1); })
+      .then(function () { inp.value = ''; });
+  });
+  $('inlineImg').addEventListener('change', function () {
+    var inp = this, f = inp.files[0]; if (!f) return;
+    var alt = prompt('متن جایگزین تصویر (alt):', '') || ''; toast('در حال آپلود…');
+    loadImg(f).then(function (img) {
+      var w = Math.min(1200, img.width), h = Math.round(img.height * w / img.width);
+      return toBlob(img, w, h).then(function (b) { return upload(b, 'content'); }).then(function (url) {
+        var t = $('fContent'), a = t.selectionStart || 0, z = t.selectionEnd || 0;
+        var tag = '<img src="' + url + '" alt="' + esc(alt) + '" width="' + w + '" height="' + h + '" loading="lazy">';
+        t.value = t.value.slice(0, a) + tag + t.value.slice(z); refresh(); toast('تصویر به متن اضافه شد');
+      });
+    }).catch(function (e) { toast('خطا در آپلود: ' + (e.message || e), 1); }).then(function () { inp.value = ''; });
+  });
+
+  /* ---------- save / delete ---------- */
+  $('eForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var slug = $('fSlug').value.trim(), can = $('fCan').value.trim(), sch = $('fSch').value.replace(/<\/?script[^>]*>/gi, '').trim();
+    if (!$('fCat').value) return toast('دسته‌بندی را انتخاب کنید.', 1);
+    if (/\s/.test(slug) || !slug) return toast('اسلاگ نباید خالی باشد یا فاصله داشته باشد.', 1);
+    if (can && !/^https?:\/\//i.test(can)) return toast('کنونیکال باید با https:// شروع شود.', 1);
+    if (!schemaObj().ok) return toast('اسکیمای دستی JSON معتبر نیست.', 1);
+    var row = {
+      title: $('fTitle').value.trim(), slug: slug, category: $('fCat').value, excerpt: $('fExcerpt').value.trim(),
+      content_html: $('fContent').value, cover_url: $('fCover').value || null, thumb_url: $('fThumb').value || null,
+      cover_alt: $('fAlt').value.trim() || null, meta_title: $('fMT').value.trim() || null, meta_description: $('fMD').value.trim() || null,
+      focus_keyword: $('fKey').value.trim() || null, reading_minutes: +$('fRead').value || 5, is_published: $('fPub').checked,
+      published_at: $('fDate').value ? new Date($('fDate').value).toISOString() : new Date().toISOString(),
+      canonical_url: can || null, schema_json: sch || null
+    };
+    $('saveBtn').disabled = true;
+    var q = editingId ? sb.from('posts').update(row).eq('id', editingId).select('id').single() : sb.from('posts').insert(row).select('id').single();
+    q.then(function (r) {
+      $('saveBtn').disabled = false;
+      if (r.error) { toast(r.error.code === '23505' ? 'این اسلاگ قبلاً استفاده شده است.' : 'خطا: ' + r.error.message, 1); return; }
+      editingId = r.data.id; $('eTitle').textContent = 'ویرایش مقاله'; $('delBtn').hidden = false;
+      var pub = row.is_published; $('viewLink').hidden = !pub; if (pub) $('viewLink').href = '/blog/' + encodeURIComponent(slug);
+      toast('ذخیره شد ✅');
+    });
+  });
+  $('delBtn').addEventListener('click', function () {
+    if (!editingId || !confirm('این مقاله برای همیشه حذف شود؟')) return;
+    sb.from('posts').delete().eq('id', editingId).then(function (r) {
+      if (r.error) return toast(r.error.message, 1);
+      toast('حذف شد'); $('backBtn').click();
+    });
+  });
+})();
+</script>
+</body>
+</html>
